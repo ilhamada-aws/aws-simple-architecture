@@ -1,0 +1,94 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Architecture IoT gratuite (Free Tier) - Détruire après test'
+
+Resources:
+  # 1. Bucket S3 (5GB max)
+  IoTFreeBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub 'iot-free-data-${AWS::AccountId}'
+      VersioningConfiguration:
+        Status: Suspended  # Désactivé pour éviter les coûts de versioning
+
+  # 2. Règle IoT Core basique
+  IoTFreeRule:
+    Type: AWS::IoT::TopicRule
+    Properties:
+      RuleName: 'FreeTierIngestionRule'
+      TopicRulePayload:
+        Sql: "SELECT * FROM 'iot/free/data'"
+        Actions:
+          - S3:
+              BucketName: !Ref IoTFreeBucket
+              Key: 'data.json'
+              RoleArn: !GetAtt IoTFreeRole.Arn
+
+  # 3. IAM Role minimale
+  IoTFreeRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: iot.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: 'FreeTierS3Write'
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action: s3:PutObject
+                Resource: !Sub '${IoTFreeBucket.Arn}/*'
+
+  # 4. DynamoDB (25GB gratuit)
+  FreeAlertsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: 'FreeIoTAlerts'
+      AttributeDefinitions:
+        - AttributeName: "id"
+          AttributeType: "S"
+      KeySchema:
+        - AttributeName: "id"
+          KeyType: "HASH"
+      BillingMode: PAY_PER_REQUEST
+      SSESpecification:
+        SSEEnabled: true
+
+  # 5. Lambda (1M req/mois gratuites)
+  FreeLambda:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: 'FreeTierProcessor'
+      Runtime: python3.9
+      Handler: index.lambda_handler
+      Role: !GetAtt LambdaFreeRole.Arn
+      Code:
+        ZipFile: |
+          import json
+          def lambda_handler(event, context):
+              return {'statusCode': 200}
+      Timeout: 3  # Minimum pour réduire l'execution time
+
+  # 6. IAM Role Lambda minimale
+  LambdaFreeRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+
+Outputs:
+  BucketName:
+    Value: !Ref IoTFreeBucket
+  HowToDelete:
+    Value: !Sub 'https://console.aws.amazon.com/cloudformation/home?region=${AWS::Region}#/stacks/stackinfo?stackId=${AWS::StackId}'
