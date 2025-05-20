@@ -12,8 +12,8 @@
 4. **DynamoDB** : Database pour stocker les alertes.
 5. **Quicksight**: Visualisation des alertes et suivi des engins/coûts.
 
-## 🛠️ Déploiement :  Stack complète   
-- `chantier-connecté-free-tier` : Template CloudFormation  
+## 🛠️ Déploiement :  Stack complète - Template CloudFormation
+- [Voir les fichiers](/chantier-connecté-free-tier) :   
 
 ### 💡 Well architected Framewrok : 
 1. **Operational excellence** : #Etre déployée en 1 Clic avec documentation reproductible
