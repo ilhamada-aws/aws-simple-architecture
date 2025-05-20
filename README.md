@@ -13,7 +13,7 @@
 5. **Quicksight**: Visualisation des alertes et suivi des engins/coûts.
 
 ## 🛠️ Déploiement :  Stack complète - Template CloudFormation
-- [Voir les fichiers](/chantier-connecté-free-tier)   
+- [Voir les fichiers](/Chantier-connecté-free-tier.yaml)   
 
 ### 💡 Well architected Framewrok : 
 1. **Operational excellence** : #Etre déployée en 1 Clic avec documentation reproductible
