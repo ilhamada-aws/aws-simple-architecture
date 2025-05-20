@@ -11,9 +11,11 @@
 3. **Lambda** : Traitement de la data et détéetion des alertes.
 4. **DynamoDB** : Database pour stocker les alertes.
 5. **Quicksight**: Visualisation des alertes et suivi des engins/coûts.
-   
 
-## 💡 Well architected Framewrok : 
+## 🛠️ Déploiement :  Stack complète   
+- `chantier-connecté-free-tier` : Template CloudFormation  
+
+### 💡 Well architected Framewrok : 
 1. **Operational excellence** : #Etre déployée en 1 Clic avec documentation reproductible
 - Automatisation : Déploiement avec Cloud formation (pour reproductibilité) + script Python pour simuler les capteurs (éviter des tests manuels)
 - Monitoring : CloudWatch (acrivé par défaut sur IoT Core et Lambda) pour tracer les erreurs
