@@ -3,7 +3,7 @@
 **Objectif** : Suivi de chantier avec quicksight
 
 ## 📊 Diagramme
-![aws-simple-architecture](Chantier BTP Connecté.png)
+![aws-simple-architecture](Chantier BTP Connecté .png)
 
 ## 🔧 Composants
 1. **IoT Core**: Collect la data depuis les capteurs IoT sur les engins.  
